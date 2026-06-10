@@ -193,11 +193,25 @@ import Layout from '../layouts/Layout.astro';
               </div>
             </div>
           </div>
+
+          <!-- PDF Download button -->
+          <div id="pdf-button-container" class="mt-6 hidden">
+            <button 
+              id="download-pdf-btn"
+              type="button"
+              class="w-full inline-flex items-center justify-center rounded-md bg-brand hover:bg-brand-hover px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 cursor-pointer"
+            >
+              ⬇ Download Loan Schedule (PDF)
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </Layout>
+
+<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
 <script>
   // DOM Elements - Inputs
@@ -286,6 +300,14 @@ import Layout from '../layouts/Layout.astro';
     // Update Stacked Bar widths
     barPrincipal.style.width = `${principalPct}%`;
     barInterest.style.width = `${interestPct}%`;
+
+    // Toggle PDF button container
+    const pdfButtonContainer = document.getElementById('pdf-button-container');
+    if (principal > 0) {
+      pdfButtonContainer?.classList.remove('hidden');
+    } else {
+      pdfButtonContainer?.classList.add('hidden');
+    }
   }
 
   // Event Listeners
@@ -293,6 +315,182 @@ import Layout from '../layouts/Layout.astro';
   interestRateInput?.addEventListener('input', calculateLoan);
   loanTermInput?.addEventListener('input', calculateLoan);
   frequencySelect?.addEventListener('change', calculateLoan);
+
+  // Repayment schedule simulation aggregated by Year
+  interface LoanAmortizationYear {
+    year: number;
+    principalPaid: number;
+    interestPaid: number;
+    balance: number;
+  }
+
+  function simulateLoanAmortization(principal: number, annualInterestRate: number, loanTermYears: number, repaymentFrequency: number, payment: number) {
+    let balance = principal;
+    const r = (annualInterestRate / 100) / repaymentFrequency;
+    const totalPeriods = loanTermYears * repaymentFrequency;
+    
+    let totalInterest = 0;
+    let periodCount = 0;
+    const yearlyData: LoanAmortizationYear[] = [];
+    
+    let yearPrincipalPaid = 0;
+    let yearInterestPaid = 0;
+    let currentYear = 1;
+    
+    while (balance > 0.01 && periodCount < totalPeriods) {
+      periodCount++;
+      const interestPaid = balance * r;
+      let principalPaid = payment - interestPaid;
+      
+      if (principalPaid > balance) {
+        principalPaid = balance;
+      }
+      
+      balance -= principalPaid;
+      totalInterest += interestPaid;
+      yearPrincipalPaid += principalPaid;
+      yearInterestPaid += interestPaid;
+      
+      if (periodCount % repaymentFrequency === 0 || balance <= 0.01 || periodCount === totalPeriods) {
+        yearlyData.push({
+          year: currentYear,
+          principalPaid: yearPrincipalPaid,
+          interestPaid: yearInterestPaid,
+          balance: Math.max(0, balance)
+        });
+        currentYear++;
+        yearPrincipalPaid = 0;
+        yearInterestPaid = 0;
+      }
+    }
+    
+    return {
+      totalInterest: totalInterest,
+      yearlyData: yearlyData
+    };
+  }
+
+  // PDF Export Click Handler
+  const downloadPdfBtn = document.getElementById('download-pdf-btn');
+  downloadPdfBtn?.addEventListener('click', () => {
+    const principal = parseFloat(loanAmountInput.value) || 0;
+    const annualInterestRate = parseFloat(interestRateInput.value) || 0;
+    const loanTermYears = parseFloat(loanTermInput.value) || 5;
+    const n = parseInt(frequencySelect.value) || 26;
+
+    const r = (annualInterestRate / 100) / n;
+    const totalPayments = loanTermYears * n;
+
+    let payment = 0;
+    if (principal > 0 && totalPayments > 0) {
+      if (r === 0) {
+        payment = principal / totalPayments;
+      } else {
+        payment = principal * (
+          (r * Math.pow(1 + r, totalPayments)) /
+          (Math.pow(1 + r, totalPayments) - 1)
+        );
+      }
+    }
+
+    const totalRepaid = payment * totalPayments;
+    const totalInterest = Math.max(0, totalRepaid - principal);
+
+    const extraAmort = simulateLoanAmortization(principal, annualInterestRate, loanTermYears, n, payment);
+
+    // Create jsPDF instance
+    const { jsPDF } = (window as any).jspdf;
+    const doc = new jsPDF();
+
+    const brandColor = [29, 78, 216]; // #1D4ED8
+    const darkGray = [26, 26, 26]; // #1A1A1A
+    const lightGray = [107, 114, 128]; // #6B7280
+
+    // Header
+    doc.setFont("Helvetica", "bold");
+    doc.setFontSize(22);
+    doc.setTextColor(brandColor[0], brandColor[1], brandColor[2]);
+    doc.text("bestfinancecalculator.com", 20, 20);
+
+    doc.setFont("Helvetica", "normal");
+    doc.setFontSize(10);
+    doc.setTextColor(lightGray[0], lightGray[1], lightGray[2]);
+    doc.text("https://bestfinancecalculator.vercel.app", 20, 26);
+
+    // Thin divider line
+    doc.setDrawColor(229, 231, 235);
+    doc.line(20, 32, 190, 32);
+
+    // Title
+    doc.setFont("Helvetica", "bold");
+    doc.setFontSize(16);
+    doc.setTextColor(darkGray[0], darkGray[1], darkGray[2]);
+    doc.text("Personal Loan Repayment Schedule", 20, 44);
+
+    // Summary block (2 columns)
+    doc.setFontSize(10);
+    doc.setTextColor(darkGray[0], darkGray[1], darkGray[2]);
+    
+    // Column 1
+    doc.setFont("Helvetica", "bold");
+    doc.text("Calculation Summary", 20, 54);
+    doc.setFont("Helvetica", "normal");
+    doc.text(`Loan Amount: ${formatCurrency(principal)}`, 20, 60);
+    doc.text(`Interest Rate (p.a.): ${annualInterestRate}%`, 20, 66);
+    doc.text(`Loan Term: ${loanTermYears} Years`, 20, 72);
+    doc.text(`Repayment Frequency: ${frequencySelect.options[frequencySelect.selectedIndex].text}`, 20, 78);
+
+    // Column 2
+    doc.setFont("Helvetica", "bold");
+    doc.text("Repayment Breakdown", 110, 54);
+    doc.setFont("Helvetica", "normal");
+    doc.text(`Estimated Repayment: ${formatCurrency(payment)}`, 110, 60);
+    doc.text(`Total Interest Paid: ${formatCurrency(totalInterest)}`, 110, 66);
+    doc.setFont("Helvetica", "bold");
+    doc.text(`Total Amount Repaid: ${formatCurrency(totalRepaid)}`, 110, 74);
+
+    // Divider line
+    doc.line(20, 85, 190, 85);
+
+    // Section header
+    doc.setFont("Helvetica", "bold");
+    doc.setFontSize(12);
+    doc.text("Annual Repayment Table", 20, 95);
+
+    const tableBody = extraAmort.yearlyData.map(row => [
+      row.year.toString(),
+      formatCurrency(row.principalPaid),
+      formatCurrency(row.interestPaid),
+      formatCurrency(row.balance)
+    ]);
+
+    // Use AutoTable
+    (doc as any).autoTable({
+      startY: 101,
+      head: [['Year', 'Principal Repaid', 'Interest Repaid', 'Remaining Balance']],
+      body: tableBody,
+      theme: 'striped',
+      headStyles: {
+        fillColor: brandColor,
+        textColor: [255, 255, 255],
+        fontStyle: 'bold'
+      },
+      margin: { left: 20, right: 20 },
+      didDrawPage: (data: any) => {
+        // Add footer to each page
+        doc.setFont("Helvetica", "normal");
+        doc.setFontSize(8);
+        doc.setTextColor(lightGray[0], lightGray[1], lightGray[2]);
+        doc.text(
+          "Generated by bestfinancecalculator.com — for informational purposes only",
+          20,
+          doc.internal.pageSize.height - 10
+        );
+      }
+    });
+
+    doc.save(`loan-schedule-${Math.round(principal)}.pdf`);
+  });
 
   // Initial Calculation on Page Load
   calculateLoan();

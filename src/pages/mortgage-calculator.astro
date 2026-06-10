@@ -428,10 +428,23 @@ import Layout from '../layouts/Layout.astro';
             </tbody>
           </table>
         </div>
+        <!-- PDF Download button -->
+        <div id="pdf-button-container" class="mt-6 flex justify-end hidden">
+          <button 
+            id="download-pdf-btn"
+            type="button"
+            class="inline-flex items-center justify-center rounded-md bg-brand hover:bg-brand-hover px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 cursor-pointer"
+          >
+            ⬇ Download Amortization Schedule (PDF)
+          </button>
+        </div>
       </details>
     </div>
   </div>
 </Layout>
+
+<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
 <script>
   // DOM Elements - Inputs
@@ -648,6 +661,14 @@ import Layout from '../layouts/Layout.astro';
       `;
       amortizationTbody.appendChild(tr);
     });
+
+    // Toggle PDF button container
+    const pdfButtonContainer = document.getElementById('pdf-button-container');
+    if (loanAmount > 0) {
+      pdfButtonContainer?.classList.remove('hidden');
+    } else {
+      pdfButtonContainer?.classList.add('hidden');
+    }
   }
 
   // Sync Down Payment input fields
@@ -709,6 +730,142 @@ import Layout from '../layouts/Layout.astro';
   homeInsuranceInput?.addEventListener('input', calculateMortgage);
   hoaInput?.addEventListener('input', calculateMortgage);
   extraPaymentInput?.addEventListener('input', calculateMortgage);
+
+  // PDF Export Click Handler
+  const downloadPdfBtn = document.getElementById('download-pdf-btn');
+  downloadPdfBtn?.addEventListener('click', () => {
+    const homePrice = parseFloat(homePriceInput.value) || 0;
+    const interestRate = parseFloat(interestRateInput.value) || 0;
+    const downPaymentCash = parseFloat(downPaymentCashInput.value) || 0;
+    const loanTermYears = parseFloat(loanTermInput.value) || 30;
+    const annualPropertyTax = parseFloat(propertyTaxInput.value) || 0;
+    const annualHomeInsurance = parseFloat(homeInsuranceInput.value) || 0;
+    const monthlyHoa = parseFloat(hoaInput.value) || 0;
+    const extraMonthlyPayment = parseFloat(extraPaymentInput.value) || 0;
+    const region = regionSelect.value;
+
+    const loanAmount = Math.max(0, homePrice - downPaymentCash);
+    const monthlyInterestRate = (interestRate / 100) / 12;
+    const numberOfPayments = loanTermYears * 12;
+
+    let monthlyPi = 0;
+    if (loanAmount > 0) {
+      if (monthlyInterestRate === 0) {
+        monthlyPi = loanAmount / numberOfPayments;
+      } else {
+        monthlyPi = loanAmount * (
+          (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, numberOfPayments)) /
+          (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1)
+        );
+      }
+    }
+
+    const monthlyTax = annualPropertyTax / 12;
+    const monthlyInsurance = annualHomeInsurance / 12;
+    const baseTotalPayment = monthlyPi + monthlyTax + monthlyInsurance + monthlyHoa;
+
+    const extraAmort = simulateAmortization(loanAmount, interestRate, loanTermYears, monthlyPi, extraMonthlyPayment);
+
+    // Create jsPDF instance
+    const { jsPDF } = (window as any).jspdf;
+    const doc = new jsPDF();
+
+    const brandColor = [29, 78, 216]; // #1D4ED8
+    const darkGray = [26, 26, 26]; // #1A1A1A
+    const lightGray = [107, 114, 128]; // #6B7280
+
+    // Header
+    doc.setFont("Helvetica", "bold");
+    doc.setFontSize(22);
+    doc.setTextColor(brandColor[0], brandColor[1], brandColor[2]);
+    doc.text("bestfinancecalculator.com", 20, 20);
+
+    doc.setFont("Helvetica", "normal");
+    doc.setFontSize(10);
+    doc.setTextColor(lightGray[0], lightGray[1], lightGray[2]);
+    doc.text("https://bestfinancecalculator.vercel.app", 20, 26);
+
+    // Thin divider line
+    doc.setDrawColor(229, 231, 235);
+    doc.line(20, 32, 190, 32);
+
+    // Title
+    doc.setFont("Helvetica", "bold");
+    doc.setFontSize(16);
+    doc.setTextColor(darkGray[0], darkGray[1], darkGray[2]);
+    doc.text("Mortgage Amortization Schedule", 20, 44);
+
+    // Summary block (2 columns)
+    doc.setFontSize(10);
+    doc.setTextColor(darkGray[0], darkGray[1], darkGray[2]);
+    
+    // Column 1
+    doc.setFont("Helvetica", "bold");
+    doc.text("Calculation Summary", 20, 54);
+    doc.setFont("Helvetica", "normal");
+    doc.text(`Region: ${region}`, 20, 60);
+    doc.text(`Home Price: ${formatCurrency(homePrice)}`, 20, 66);
+    doc.text(`Down Payment: ${formatCurrency(downPaymentCash)} (${downPaymentPercentInput.value}%)`, 20, 72);
+    doc.text(`Loan Amount: ${formatCurrency(loanAmount)}`, 20, 78);
+    doc.text(`Interest Rate: ${interestRate}%`, 20, 84);
+    doc.text(`Loan Term: ${loanTermYears} Years`, 20, 90);
+
+    // Column 2
+    doc.setFont("Helvetica", "bold");
+    doc.text("Monthly Payment Breakdown", 110, 54);
+    doc.setFont("Helvetica", "normal");
+    doc.text(`Principal & Interest: ${formatCurrency(monthlyPi)}`, 110, 60);
+    doc.text(`Property Tax (Monthly): ${formatCurrency(monthlyTax)}`, 110, 66);
+    doc.text(`Home Insurance (Monthly): ${formatCurrency(monthlyInsurance)}`, 110, 72);
+    doc.text(`HOA Fees: ${formatCurrency(monthlyHoa)}`, 110, 78);
+    if (extraMonthlyPayment > 0) {
+      doc.text(`Extra Monthly Payment: ${formatCurrency(extraMonthlyPayment)}`, 110, 84);
+    }
+    doc.setFont("Helvetica", "bold");
+    doc.text(`Total Monthly Payment: ${formatCurrency(baseTotalPayment)}`, 110, 92);
+
+    // Divider line
+    doc.line(20, 100, 190, 100);
+
+    // Section header
+    doc.setFont("Helvetica", "bold");
+    doc.setFontSize(12);
+    doc.text("Annual Amortization Table", 20, 110);
+
+    const tableBody = extraAmort.yearlyData.map(row => [
+      row.year.toString(),
+      formatCurrency(row.principalPaid),
+      formatCurrency(row.interestPaid),
+      formatCurrency(row.balance)
+    ]);
+
+    // Use AutoTable
+    (doc as any).autoTable({
+      startY: 116,
+      head: [['Year', 'Principal Paid', 'Interest Paid', 'Remaining Balance']],
+      body: tableBody,
+      theme: 'striped',
+      headStyles: {
+        fillColor: brandColor,
+        textColor: [255, 255, 255],
+        fontStyle: 'bold'
+      },
+      margin: { left: 20, right: 20 },
+      didDrawPage: (data: any) => {
+        // Add footer to each page
+        doc.setFont("Helvetica", "normal");
+        doc.setFontSize(8);
+        doc.setTextColor(lightGray[0], lightGray[1], lightGray[2]);
+        doc.text(
+          "Generated by bestfinancecalculator.com — for informational purposes only",
+          20,
+          doc.internal.pageSize.height - 10
+        );
+      }
+    });
+
+    doc.save(`mortgage-schedule-${Math.round(loanAmount)}.pdf`);
+  });
 
   // Initial Calculation on Page Load
   calculateMortgage();
