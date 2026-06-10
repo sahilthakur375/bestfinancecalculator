@@ -329,6 +329,17 @@ import Layout from '../layouts/Layout.astro';
             </div>
           </div>
 
+          <!-- PDF Download button -->
+          <div id="pdf-button-container" class="mt-6 hidden">
+            <button 
+              id="download-pdf-btn"
+              type="button"
+              class="w-full inline-flex items-center justify-center rounded-md bg-brand hover:bg-brand-hover px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 cursor-pointer"
+            >
+              ⬇ Download Amortization Schedule (PDF)
+            </button>
+          </div>
+
           <!-- Stacked Bar Chart -->
           <div class="mt-8">
             <div class="h-4 w-full rounded-full bg-border overflow-hidden flex">
@@ -427,16 +438,6 @@ import Layout from '../layouts/Layout.astro';
               <!-- JS will inject rows here -->
             </tbody>
           </table>
-        </div>
-        <!-- PDF Download button -->
-        <div id="pdf-button-container" class="mt-6 flex justify-end hidden">
-          <button 
-            id="download-pdf-btn"
-            type="button"
-            class="inline-flex items-center justify-center rounded-md bg-brand hover:bg-brand-hover px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 cursor-pointer"
-          >
-            ⬇ Download Amortization Schedule (PDF)
-          </button>
         </div>
       </details>
     </div>
