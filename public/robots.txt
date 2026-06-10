@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://bestfinancecalculator.vercel.app/sitemap-index.xml
