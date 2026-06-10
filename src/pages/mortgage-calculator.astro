@@ -1,0 +1,715 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout 
+  title="Mortgage Calculator | bestfinancecalculator.com"
+  description="Calculate your monthly mortgage payments including principal, interest, property taxes, home insurance, and HOA fees with real-time updates and extra payment savings analysis."
+>
+  <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+    <!-- Page Header -->
+    <div class="mb-12 text-center md:text-left">
+      <span class="inline-flex items-center gap-1.5 rounded-full bg-brand/10 px-3 py-1 text-xs font-semibold text-brand ring-1 ring-inset ring-brand/20">
+        USA, UK, Canada & Australia mortgage rules
+      </span>
+      <h1 class="mt-4 text-3xl sm:text-5xl font-extrabold font-display tracking-tight text-main-text">
+        Mortgage Calculator
+      </h1>
+      <p class="mt-3 text-muted-text max-w-2xl">
+        Estimate your total monthly mortgage costs instantly. Change parameters like down payment, interest rates, and localized taxes to see your updated payment breakdown in real-time.
+      </p>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <!-- Input Form Column -->
+      <div class="lg:col-span-7 space-y-8">
+        <!-- Core Loan details -->
+        <div class="rounded-md border border-border bg-surface p-6 sm:p-8 shadow-xs space-y-6">
+          <div class="border-b border-border pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <h2 class="text-lg font-bold font-display text-main-text">
+              1. Core Loan Details
+            </h2>
+            <!-- Select Region Dropdown -->
+            <div class="flex items-center gap-2">
+              <label for="input-region" class="text-xs font-semibold text-muted-text uppercase tracking-wider">Region:</label>
+              <select
+                id="input-region"
+                class="rounded-md border border-border bg-page text-main-text py-1.5 px-3 text-xs focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition-all"
+              >
+                <option value="USA" class="bg-page text-main-text">United States ($)</option>
+                <option value="UK" class="bg-page text-main-text">United Kingdom (£)</option>
+                <option value="Canada" class="bg-page text-main-text">Canada ($)</option>
+                <option value="Australia" class="bg-page text-main-text">Australia ($)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <!-- Home Price -->
+            <div class="space-y-2">
+              <label for="input-home-price" class="block text-sm font-semibold text-main-text mb-1 flex items-center gap-1.5 relative group">
+                Home Price
+                <span tabindex="0" class="inline-flex items-center justify-center w-4 h-4 text-[10px] font-bold font-mono rounded-full bg-border text-muted-text cursor-help select-none focus:outline-hidden focus:ring-1 focus:ring-brand">i</span>
+                <!-- Tooltip Box -->
+                <span class="absolute bottom-full left-0 mb-1.5 hidden group-hover:block group-focus-within:block w-56 p-2 text-xs font-normal leading-normal text-white bg-slate-900 dark:bg-slate-800 rounded-lg shadow-xl border border-border z-30 pointer-events-none">
+                  The total purchase price of the home you intend to buy.
+                </span>
+              </label>
+              <div class="relative rounded-md shadow-xs">
+                <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+                  <span class="currency-symbol text-muted-text sm:text-sm font-medium">$</span>
+                </div>
+                <input
+                  type="number"
+                  id="input-home-price"
+                  min="0"
+                  step="1000"
+                  value="400000"
+                  class="block w-full rounded-md border border-border bg-page text-main-text py-3 pl-8 pr-4 placeholder:text-muted-text focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand sm:text-sm transition-all"
+                />
+              </div>
+            </div>
+
+            <!-- Interest Rate -->
+            <div class="space-y-2">
+              <label for="input-interest-rate" class="block text-sm font-semibold text-main-text mb-1 flex items-center gap-1.5 relative group">
+                Interest Rate
+                <span tabindex="0" class="inline-flex items-center justify-center w-4 h-4 text-[10px] font-bold font-mono rounded-full bg-border text-muted-text cursor-help select-none focus:outline-hidden focus:ring-1 focus:ring-brand">i</span>
+                <!-- Tooltip Box -->
+                <span class="absolute bottom-full left-0 mb-1.5 hidden group-hover:block group-focus-within:block w-56 p-2 text-xs font-normal leading-normal text-white bg-slate-900 dark:bg-slate-800 rounded-lg shadow-xl border border-border z-30 pointer-events-none">
+                  The annual interest rate charged by your lender for this mortgage.
+                </span>
+              </label>
+              <div class="relative rounded-md shadow-xs">
+                <input
+                  type="number"
+                  id="input-interest-rate"
+                  min="0"
+                  max="100"
+                  step="0.01"
+                  value="6.5"
+                  class="block w-full rounded-md border border-border bg-page text-main-text py-3 pl-4 pr-8 placeholder:text-muted-text focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand sm:text-sm transition-all"
+                />
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
+                  <span class="text-muted-text sm:text-sm font-medium">%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <!-- Down Payment Amount -->
+            <div class="space-y-2">
+              <label for="input-down-payment-cash" class="block text-sm font-semibold text-main-text mb-1 flex items-center gap-1.5 relative group">
+                Down Payment ($)
+                <span tabindex="0" class="inline-flex items-center justify-center w-4 h-4 text-[10px] font-bold font-mono rounded-full bg-border text-muted-text cursor-help select-none focus:outline-hidden focus:ring-1 focus:ring-brand">i</span>
+                <!-- Tooltip Box -->
+                <span class="absolute bottom-full left-0 mb-1.5 hidden group-hover:block group-focus-within:block w-56 p-2 text-xs font-normal leading-normal text-white bg-slate-900 dark:bg-slate-800 rounded-lg shadow-xl border border-border z-30 pointer-events-none">
+                  The cash amount you pay upfront toward the home purchase.
+                </span>
+              </label>
+              <div class="relative rounded-md shadow-xs">
+                <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+                  <span class="currency-symbol text-muted-text sm:text-sm font-medium">$</span>
+                </div>
+                <input
+                  type="number"
+                  id="input-down-payment-cash"
+                  min="0"
+                  step="1000"
+                  value="80000"
+                  class="block w-full rounded-md border border-border bg-page text-main-text py-3 pl-8 pr-4 placeholder:text-muted-text focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand sm:text-sm transition-all"
+                />
+              </div>
+            </div>
+
+            <!-- Down Payment Percent -->
+            <div class="space-y-2">
+              <label for="input-down-payment-percent" class="block text-sm font-semibold text-main-text mb-1 flex items-center gap-1.5 relative group">
+                Down Payment (%)
+                <span tabindex="0" class="inline-flex items-center justify-center w-4 h-4 text-[10px] font-bold font-mono rounded-full bg-border text-muted-text cursor-help select-none focus:outline-hidden focus:ring-1 focus:ring-brand">i</span>
+                <!-- Tooltip Box -->
+                <span class="absolute bottom-full left-0 mb-1.5 hidden group-hover:block group-focus-within:block w-56 p-2 text-xs font-normal leading-normal text-white bg-slate-900 dark:bg-slate-800 rounded-lg shadow-xl border border-border z-30 pointer-events-none">
+                  The percentage of the home price paid upfront. 20% is typical to avoid PMI.
+                </span>
+              </label>
+              <div class="relative rounded-md shadow-xs">
+                <input
+                  type="number"
+                  id="input-down-payment-percent"
+                  min="0"
+                  max="100"
+                  step="0.1"
+                  value="20"
+                  class="block w-full rounded-md border border-border bg-page text-main-text py-3 pl-4 pr-8 placeholder:text-muted-text focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand sm:text-sm transition-all"
+                />
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
+                  <span class="text-muted-text sm:text-sm font-medium">%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Loan Term -->
+          <div class="space-y-2">
+            <label for="input-loan-term" class="block text-sm font-semibold text-main-text mb-1 flex items-center gap-1.5 relative group">
+              Loan Term
+              <span tabindex="0" class="inline-flex items-center justify-center w-4 h-4 text-[10px] font-bold font-mono rounded-full bg-border text-muted-text cursor-help select-none focus:outline-hidden focus:ring-1 focus:ring-brand">i</span>
+              <!-- Tooltip Box -->
+              <span class="absolute bottom-full left-0 mb-1.5 hidden group-hover:block group-focus-within:block w-56 p-2 text-xs font-normal leading-normal text-white bg-slate-900 dark:bg-slate-800 rounded-lg shadow-xl border border-border z-30 pointer-events-none">
+                The number of years you have to repay the mortgage (usually 15, 20, or 30).
+              </span>
+            </label>
+            <div class="relative rounded-md shadow-xs">
+              <input
+                type="number"
+                id="input-loan-term"
+                min="1"
+                max="100"
+                step="1"
+                value="30"
+                class="block w-full rounded-md border border-border bg-page text-main-text py-3 pl-4 pr-16 placeholder:text-muted-text focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand sm:text-sm transition-all"
+              />
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
+                <span class="text-muted-text sm:text-sm font-medium">Years</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Additional Costs -->
+        <div class="rounded-md border border-border bg-surface p-6 sm:p-8 shadow-xs space-y-6">
+          <h2 class="text-lg font-bold font-display text-main-text border-b border-border pb-4">
+            2. Property taxes, Insurance & HOA
+          </h2>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <!-- Property Tax -->
+            <div class="space-y-2">
+              <label for="input-property-tax" class="block text-sm font-semibold text-main-text mb-1 flex items-center justify-between relative group">
+                <span class="flex items-center gap-1.5">
+                  Property Tax
+                  <span tabindex="0" class="inline-flex items-center justify-center w-4 h-4 text-[10px] font-bold font-mono rounded-full bg-border text-muted-text cursor-help select-none focus:outline-hidden focus:ring-1 focus:ring-brand">i</span>
+                  <!-- Tooltip Box -->
+                  <span class="absolute bottom-full left-0 mb-1.5 hidden group-hover:block group-focus-within:block w-56 p-2 text-xs font-normal leading-normal text-white bg-slate-900 dark:bg-slate-800 rounded-lg shadow-xl border border-border z-30 pointer-events-none">
+                    The annual tax charged by local governments on property owners.
+                  </span>
+                </span>
+                <span class="text-xs font-normal text-muted-text">Annual</span>
+              </label>
+              <div class="relative rounded-md shadow-xs">
+                <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+                  <span class="currency-symbol text-muted-text sm:text-sm font-medium">$</span>
+                </div>
+                <input
+                  type="number"
+                  id="input-property-tax"
+                  min="0"
+                  step="100"
+                  value="4800"
+                  class="block w-full rounded-md border border-border bg-page text-main-text py-3 pl-8 pr-16 placeholder:text-muted-text focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand sm:text-sm transition-all"
+                />
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
+                  <span class="text-muted-text text-xs">/yr</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Home Insurance -->
+            <div class="space-y-2">
+              <label for="input-home-insurance" class="block text-sm font-semibold text-main-text mb-1 flex items-center justify-between relative group">
+                <span class="flex items-center gap-1.5">
+                  Home Insurance
+                  <span tabindex="0" class="inline-flex items-center justify-center w-4 h-4 text-[10px] font-bold font-mono rounded-full bg-border text-muted-text cursor-help select-none focus:outline-hidden focus:ring-1 focus:ring-brand">i</span>
+                  <!-- Tooltip Box -->
+                  <span class="absolute bottom-full left-0 mb-1.5 hidden group-hover:block group-focus-within:block w-56 p-2 text-xs font-normal leading-normal text-white bg-slate-900 dark:bg-slate-800 rounded-lg shadow-xl border border-border z-30 pointer-events-none">
+                    Annual cost to insure the home against damages, typically required by lenders.
+                  </span>
+                </span>
+                <span class="text-xs font-normal text-muted-text">Annual</span>
+              </label>
+              <div class="relative rounded-md shadow-xs">
+                <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+                  <span class="currency-symbol text-muted-text sm:text-sm font-medium">$</span>
+                </div>
+                <input
+                  type="number"
+                  id="input-home-insurance"
+                  min="0"
+                  step="50"
+                  value="1200"
+                  class="block w-full rounded-md border border-border bg-page text-main-text py-3 pl-8 pr-16 placeholder:text-muted-text focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand sm:text-sm transition-all"
+                />
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
+                  <span class="text-muted-text text-xs">/yr</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- HOA Fees -->
+          <div class="space-y-2">
+            <label for="input-hoa" class="block text-sm font-semibold text-main-text mb-1 flex items-center justify-between relative group">
+              <span class="flex items-center gap-1.5">
+                HOA Fees
+                <span tabindex="0" class="inline-flex items-center justify-center w-4 h-4 text-[10px] font-bold font-mono rounded-full bg-border text-muted-text cursor-help select-none focus:outline-hidden focus:ring-1 focus:ring-brand">i</span>
+                <!-- Tooltip Box -->
+                <span class="absolute bottom-full left-0 mb-1.5 hidden group-hover:block group-focus-within:block w-56 p-2 text-xs font-normal leading-normal text-white bg-slate-900 dark:bg-slate-800 rounded-lg shadow-xl border border-border z-30 pointer-events-none">
+                  Monthly Homeowners Association fees paid for community services and upkeep.
+                </span>
+              </span>
+              <span class="text-xs font-normal text-muted-text">Monthly</span>
+            </label>
+            <div class="relative rounded-md shadow-xs">
+              <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+                <span class="currency-symbol text-muted-text sm:text-sm font-medium">$</span>
+              </div>
+              <input
+                type="number"
+                id="input-hoa"
+                min="0"
+                step="10"
+                value="150"
+                class="block w-full rounded-md border border-border bg-page text-main-text py-3 pl-8 pr-16 placeholder:text-muted-text focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand sm:text-sm transition-all"
+              />
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
+                <span class="text-muted-text text-xs">/mo</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Extra Payments -->
+        <div class="rounded-md border border-border bg-surface p-6 sm:p-8 shadow-xs space-y-6">
+          <h2 class="text-lg font-bold font-display text-main-text border-b border-border pb-4">
+            3. Extra Payments (Optional)
+          </h2>
+
+          <div class="space-y-2">
+            <label for="input-extra-payment" class="block text-sm font-semibold text-main-text mb-1 flex items-center gap-1.5 relative group">
+              Extra Monthly Payment
+              <span tabindex="0" class="inline-flex items-center justify-center w-4 h-4 text-[10px] font-bold font-mono rounded-full bg-border text-muted-text cursor-help select-none focus:outline-hidden focus:ring-1 focus:ring-brand">i</span>
+              <!-- Tooltip Box -->
+              <span class="absolute bottom-full left-0 mb-1.5 hidden group-hover:block group-focus-within:block w-56 p-2 text-xs font-normal leading-normal text-white bg-slate-900 dark:bg-slate-800 rounded-lg shadow-xl border border-border z-30 pointer-events-none">
+                An additional monthly payment made to reduce the loan principal faster and save interest.
+              </span>
+            </label>
+            <div class="relative rounded-md shadow-xs">
+              <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+                <span class="currency-symbol text-muted-text sm:text-sm font-medium">$</span>
+              </div>
+              <input
+                type="number"
+                id="input-extra-payment"
+                min="0"
+                step="50"
+                value="0"
+                class="block w-full rounded-md border border-border bg-page text-main-text py-3 pl-8 pr-4 placeholder:text-muted-text focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand sm:text-sm transition-all"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Column -->
+      <div class="lg:col-span-5 lg:sticky lg:top-24 space-y-6">
+        <div class="rounded-md border border-border bg-surface p-8 shadow-sm">
+          <!-- Total Headline -->
+          <div class="text-center">
+            <h3 class="text-sm font-semibold text-muted-text uppercase tracking-wider">
+              Total Monthly Payment
+            </h3>
+            <p id="result-total-payment" class="mt-4 text-4xl sm:text-5xl font-extrabold font-display text-brand">
+              $0.00
+            </p>
+            <div class="mt-3 flex items-center justify-center gap-1.5 text-xs text-muted-text">
+              <span>Loan Amount:</span>
+              <span id="result-loan-amount" class="font-semibold text-main-text">$0.00</span>
+            </div>
+          </div>
+
+          <!-- Stacked Bar Chart -->
+          <div class="mt-8">
+            <div class="h-4 w-full rounded-full bg-border overflow-hidden flex">
+              <!-- Principal & Interest segment -->
+              <div id="bar-pi" class="h-full bg-brand transition-all duration-300" style="width: 0%"></div>
+              <!-- Property Tax segment -->
+              <div id="bar-tax" class="h-full bg-rose-500 dark:bg-rose-400 transition-all duration-300" style="width: 0%"></div>
+              <!-- Home Insurance segment -->
+              <div id="bar-insurance" class="h-full bg-amber-500 dark:bg-amber-400 transition-all duration-300" style="width: 0%"></div>
+              <!-- HOA segment -->
+              <div id="bar-hoa" class="h-full bg-emerald-500 dark:bg-emerald-400 transition-all duration-300" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <!-- Breakdown List -->
+          <div class="mt-8 space-y-4">
+            <!-- Principal & Interest row -->
+            <div class="flex items-center justify-between py-2 border-b border-border">
+              <div class="flex items-center gap-2.5">
+                <span class="h-3 w-3 rounded-full bg-brand shrink-0"></span>
+                <span class="text-sm font-medium text-muted-text">Principal & Interest</span>
+              </div>
+              <div class="text-right">
+                <span id="result-pi" class="text-sm font-bold text-main-text">$0.00</span>
+                <span id="pct-pi" class="block text-[10px] text-muted-text">0%</span>
+              </div>
+            </div>
+
+            <!-- Property Tax row -->
+            <div class="flex items-center justify-between py-2 border-b border-border">
+              <div class="flex items-center gap-2.5">
+                <span class="h-3 w-3 rounded-full bg-rose-500 dark:bg-rose-400 shrink-0"></span>
+                <span class="text-sm font-medium text-muted-text">Property Tax (Monthly)</span>
+              </div>
+              <div class="text-right">
+                <span id="result-tax" class="text-sm font-bold text-main-text">$0.00</span>
+                <span id="pct-tax" class="block text-[10px] text-muted-text">0%</span>
+              </div>
+            </div>
+
+            <!-- Home Insurance row -->
+            <div class="flex items-center justify-between py-2 border-b border-border">
+              <div class="flex items-center gap-2.5">
+                <span class="h-3 w-3 rounded-full bg-amber-500 dark:bg-amber-400 shrink-0"></span>
+                <span class="text-sm font-medium text-muted-text">Home Insurance (Monthly)</span>
+              </div>
+              <div class="text-right">
+                <span id="result-insurance" class="text-sm font-bold text-main-text">$0.00</span>
+                <span id="pct-insurance" class="block text-[10px] text-muted-text">0%</span>
+              </div>
+            </div>
+
+            <!-- HOA row -->
+            <div class="flex items-center justify-between py-2">
+              <div class="flex items-center gap-2.5">
+                <span class="h-3 w-3 rounded-full bg-emerald-500 dark:bg-emerald-400 shrink-0"></span>
+                <span class="text-sm font-medium text-muted-text">HOA Fees</span>
+              </div>
+              <div class="text-right">
+                <span id="result-hoa" class="text-sm font-bold text-main-text">$0.00</span>
+                <span id="pct-hoa" class="block text-[10px] text-muted-text">0%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Savings Badge / Text block -->
+          <div id="savings-card" class="hidden mt-6 p-4 rounded-xl border border-emerald-500/20 bg-emerald-50/50 dark:bg-emerald-950/20 text-emerald-800 dark:text-emerald-300 text-sm font-medium leading-relaxed">
+            🎉 By paying extra, you save <span id="savings-years" class="font-bold">0</span> years and <span id="savings-interest" class="font-bold">$0.00</span> in interest!
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Amortization Schedule section -->
+    <div class="mt-12 rounded-md border border-border bg-surface p-6 sm:p-8 shadow-xs">
+      <details class="group">
+        <summary class="flex items-center justify-between cursor-pointer focus:outline-hidden select-none">
+          <span class="text-lg font-bold font-display text-main-text flex items-center gap-2">
+            <svg class="h-5 w-5 text-brand transition-transform group-open:rotate-90" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            </svg>
+            View Full Amortization Schedule
+          </span>
+        </summary>
+        <div class="mt-6 overflow-x-auto">
+          <table class="min-w-full divide-y divide-border text-left text-sm">
+            <thead>
+              <tr class="text-muted-text font-semibold">
+                <th class="py-3 px-4">Year</th>
+                <th class="py-3 px-4">Principal Paid</th>
+                <th class="py-3 px-4">Interest Paid</th>
+                <th class="py-3 px-4">Remaining Balance</th>
+              </tr>
+            </thead>
+            <tbody id="amortization-tbody" class="divide-y divide-border text-muted-text">
+              <!-- JS will inject rows here -->
+            </tbody>
+          </table>
+        </div>
+      </details>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  // DOM Elements - Inputs
+  const regionSelect = document.getElementById('input-region') as HTMLSelectElement;
+  const homePriceInput = document.getElementById('input-home-price') as HTMLInputElement;
+  const interestRateInput = document.getElementById('input-interest-rate') as HTMLInputElement;
+  const downPaymentCashInput = document.getElementById('input-down-payment-cash') as HTMLInputElement;
+  const downPaymentPercentInput = document.getElementById('input-down-payment-percent') as HTMLInputElement;
+  const loanTermInput = document.getElementById('input-loan-term') as HTMLInputElement;
+  const propertyTaxInput = document.getElementById('input-property-tax') as HTMLInputElement;
+  const homeInsuranceInput = document.getElementById('input-home-insurance') as HTMLInputElement;
+  const hoaInput = document.getElementById('input-hoa') as HTMLInputElement;
+  const extraPaymentInput = document.getElementById('input-extra-payment') as HTMLInputElement;
+
+  // DOM Elements - Results & Chart
+  const resultTotalPayment = document.getElementById('result-total-payment') as HTMLElement;
+  const resultLoanAmount = document.getElementById('result-loan-amount') as HTMLElement;
+  const resultPi = document.getElementById('result-pi') as HTMLElement;
+  const resultTax = document.getElementById('result-tax') as HTMLElement;
+  const resultInsurance = document.getElementById('result-insurance') as HTMLElement;
+  const resultHoa = document.getElementById('result-hoa') as HTMLElement;
+
+  const pctPi = document.getElementById('pct-pi') as HTMLElement;
+  const pctTax = document.getElementById('pct-tax') as HTMLElement;
+  const pctInsurance = document.getElementById('pct-insurance') as HTMLElement;
+  const pctHoa = document.getElementById('pct-hoa') as HTMLElement;
+
+  const barPi = document.getElementById('bar-pi') as HTMLElement;
+  const barTax = document.getElementById('bar-tax') as HTMLElement;
+  const barInsurance = document.getElementById('bar-insurance') as HTMLElement;
+  const barHoa = document.getElementById('bar-hoa') as HTMLElement;
+
+  // DOM Elements - Savings and Table
+  const savingsCard = document.getElementById('savings-card') as HTMLElement;
+  const savingsYears = document.getElementById('savings-years') as HTMLElement;
+  const savingsInterest = document.getElementById('savings-interest') as HTMLElement;
+  const amortizationTbody = document.getElementById('amortization-tbody') as HTMLElement;
+
+  // Region Config Map
+  const regionConfig: Record<string, { symbol: string, code: string, rate: number, tax: number, insurance: number }> = {
+    'USA': { symbol: '$', code: 'USD', rate: 6.5, tax: 4800, insurance: 1200 },
+    'UK': { symbol: '£', code: 'GBP', rate: 5.5, tax: 0, insurance: 400 },
+    'Canada': { symbol: '$', code: 'CAD', rate: 5.0, tax: 3000, insurance: 1000 },
+    'Australia': { symbol: '$', code: 'AUD', rate: 6.0, tax: 2000, insurance: 1000 }
+  };
+
+  // State
+  let currentCurrencySymbol = '$';
+  let currentCurrencyCode = 'USD';
+
+  // Formatting helper
+  function formatCurrency(amount: number): string {
+    return amount.toLocaleString('en-US', {
+      style: 'currency',
+      currency: currentCurrencyCode,
+      maximumFractionDigits: 2
+    });
+  }
+
+  // Simulate amortization schedule month-by-month, aggregated by Year
+  interface AmortizationYear {
+    year: number;
+    principalPaid: number;
+    interestPaid: number;
+    balance: number;
+  }
+
+  function simulateAmortization(loanAmount: number, interestRate: number, termYears: number, monthlyPi: number, extraPayment: number) {
+    let balance = loanAmount;
+    const r = (interestRate / 100) / 12;
+    const totalMonths = termYears * 12;
+    
+    let totalInterest = 0;
+    let monthsCount = 0;
+    const yearlyData: AmortizationYear[] = [];
+    
+    let yearPrincipalPaid = 0;
+    let yearInterestPaid = 0;
+    let currentYear = 1;
+    
+    while (balance > 0.01 && monthsCount < 1200) {
+      monthsCount++;
+      const interestPaid = balance * r;
+      let principalPaid = monthlyPi + extraPayment - interestPaid;
+      
+      if (principalPaid > balance) {
+        principalPaid = balance;
+      }
+      
+      balance -= principalPaid;
+      totalInterest += interestPaid;
+      yearPrincipalPaid += principalPaid;
+      yearInterestPaid += interestPaid;
+      
+      if (monthsCount % 12 === 0 || balance <= 0.01) {
+        yearlyData.push({
+          year: currentYear,
+          principalPaid: yearPrincipalPaid,
+          interestPaid: yearInterestPaid,
+          balance: Math.max(0, balance)
+        });
+        currentYear++;
+        yearPrincipalPaid = 0;
+        yearInterestPaid = 0;
+      }
+    }
+    
+    return {
+      months: monthsCount,
+      totalInterest: totalInterest,
+      yearlyData: yearlyData
+    };
+  }
+
+  // Master calculation function
+  function calculateMortgage() {
+    const homePrice = parseFloat(homePriceInput.value) || 0;
+    const interestRate = parseFloat(interestRateInput.value) || 0;
+    const downPaymentCash = parseFloat(downPaymentCashInput.value) || 0;
+    const loanTermYears = parseFloat(loanTermInput.value) || 30;
+    const annualPropertyTax = parseFloat(propertyTaxInput.value) || 0;
+    const annualHomeInsurance = parseFloat(homeInsuranceInput.value) || 0;
+    const monthlyHoa = parseFloat(hoaInput.value) || 0;
+    const extraMonthlyPayment = parseFloat(extraPaymentInput.value) || 0;
+
+    // Calculations
+    const loanAmount = Math.max(0, homePrice - downPaymentCash);
+    
+    // Principal & Interest
+    const monthlyInterestRate = (interestRate / 100) / 12;
+    const numberOfPayments = loanTermYears * 12;
+    
+    let monthlyPi = 0;
+    if (loanAmount > 0) {
+      if (monthlyInterestRate === 0) {
+        monthlyPi = loanAmount / numberOfPayments;
+      } else {
+        monthlyPi = loanAmount * (
+          (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, numberOfPayments)) /
+          (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1)
+        );
+      }
+    }
+
+    const monthlyTax = annualPropertyTax / 12;
+    const monthlyInsurance = annualHomeInsurance / 12;
+    
+    const baseTotalPayment = monthlyPi + monthlyTax + monthlyInsurance + monthlyHoa;
+
+    // Display basic results
+    resultTotalPayment.textContent = formatCurrency(baseTotalPayment);
+    resultLoanAmount.textContent = formatCurrency(loanAmount);
+    resultPi.textContent = formatCurrency(monthlyPi);
+    resultTax.textContent = formatCurrency(monthlyTax);
+    resultInsurance.textContent = formatCurrency(monthlyInsurance);
+    resultHoa.textContent = formatCurrency(monthlyHoa);
+
+    // Calculate percentages for chart & lists
+    let piPct = 0;
+    let taxPct = 0;
+    let insurancePct = 0;
+    let hoaPct = 0;
+
+    if (baseTotalPayment > 0) {
+      piPct = (monthlyPi / baseTotalPayment) * 100;
+      taxPct = (monthlyTax / baseTotalPayment) * 100;
+      insurancePct = (monthlyInsurance / baseTotalPayment) * 100;
+      hoaPct = (monthlyHoa / baseTotalPayment) * 100;
+    }
+
+    // Update Percentage Labels
+    pctPi.textContent = `${piPct.toFixed(1)}%`;
+    pctTax.textContent = `${taxPct.toFixed(1)}%`;
+    pctInsurance.textContent = `${insurancePct.toFixed(1)}%`;
+    pctHoa.textContent = `${hoaPct.toFixed(1)}%`;
+
+    // Update Stacked Bar widths
+    barPi.style.width = `${piPct}%`;
+    barTax.style.width = `${taxPct}%`;
+    barInsurance.style.width = `${insurancePct}%`;
+    barHoa.style.width = `${hoaPct}%`;
+
+    // Simulate schedule for base case & extra payment case
+    const baseAmort = simulateAmortization(loanAmount, interestRate, loanTermYears, monthlyPi, 0);
+    const extraAmort = simulateAmortization(loanAmount, interestRate, loanTermYears, monthlyPi, extraMonthlyPayment);
+
+    // Handle Extra Payment Savings badge
+    if (extraMonthlyPayment > 0) {
+      const monthsSaved = Math.max(0, baseAmort.months - extraAmort.months);
+      const yearsSaved = parseFloat((monthsSaved / 12).toFixed(1));
+      const interestSaved = Math.max(0, baseAmort.totalInterest - extraAmort.totalInterest);
+
+      if (monthsSaved > 0 && interestSaved > 0.01) {
+        savingsYears.textContent = yearsSaved.toString();
+        savingsInterest.textContent = formatCurrency(interestSaved);
+        savingsCard.classList.remove('hidden');
+      } else {
+        savingsCard.classList.add('hidden');
+      }
+    } else {
+      savingsCard.classList.add('hidden');
+    }
+
+    // Populate Amortization Table
+    amortizationTbody.innerHTML = '';
+    extraAmort.yearlyData.forEach((row) => {
+      const tr = document.createElement('tr');
+      tr.className = "hover:bg-surface transition-colors border-b border-border";
+      tr.innerHTML = `
+        <td class="py-3 px-4 font-medium text-main-text">${row.year}</td>
+        <td class="py-3 px-4">${formatCurrency(row.principalPaid)}</td>
+        <td class="py-3 px-4">${formatCurrency(row.interestPaid)}</td>
+        <td class="py-3 px-4">${formatCurrency(row.balance)}</td>
+      `;
+      amortizationTbody.appendChild(tr);
+    });
+  }
+
+  // Sync Down Payment input fields
+  function syncDownPayment(changedField: 'cash' | 'percent') {
+    const homePrice = parseFloat(homePriceInput.value) || 0;
+
+    if (changedField === 'cash') {
+      const cashVal = parseFloat(downPaymentCashInput.value) || 0;
+      if (homePrice > 0) {
+        const pctVal = (cashVal / homePrice) * 100;
+        downPaymentPercentInput.value = parseFloat(pctVal.toFixed(2)).toString();
+      } else {
+        downPaymentPercentInput.value = '0';
+      }
+    } else {
+      const pctVal = parseFloat(downPaymentPercentInput.value) || 0;
+      const cashVal = (pctVal / 100) * homePrice;
+      downPaymentCashInput.value = Math.round(cashVal).toString();
+    }
+  }
+
+  // Event Listeners
+  regionSelect?.addEventListener('change', () => {
+    const config = regionConfig[regionSelect.value];
+    if (config) {
+      currentCurrencySymbol = config.symbol;
+      currentCurrencyCode = config.code;
+      interestRateInput.value = config.rate.toString();
+      propertyTaxInput.value = config.tax.toString();
+      homeInsuranceInput.value = config.insurance.toString();
+
+      // Update prefix elements text
+      document.querySelectorAll('.currency-symbol').forEach((span) => {
+        span.textContent = currentCurrencySymbol;
+      });
+
+      calculateMortgage();
+    }
+  });
+
+  homePriceInput?.addEventListener('input', () => {
+    syncDownPayment('percent');
+    calculateMortgage();
+  });
+
+  downPaymentCashInput?.addEventListener('input', () => {
+    syncDownPayment('cash');
+    calculateMortgage();
+  });
+
+  downPaymentPercentInput?.addEventListener('input', () => {
+    syncDownPayment('percent');
+    calculateMortgage();
+  });
+
+  interestRateInput?.addEventListener('input', calculateMortgage);
+  loanTermInput?.addEventListener('input', calculateMortgage);
+  propertyTaxInput?.addEventListener('input', calculateMortgage);
+  homeInsuranceInput?.addEventListener('input', calculateMortgage);
+  hoaInput?.addEventListener('input', calculateMortgage);
+  extraPaymentInput?.addEventListener('input', calculateMortgage);
+
+  // Initial Calculation on Page Load
+  calculateMortgage();
+</script>

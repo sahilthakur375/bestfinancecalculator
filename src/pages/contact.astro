@@ -1,0 +1,95 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout 
+  title="Contact Us | bestfinancecalculator.com"
+  description="Get in touch with the team at bestfinancecalculator.com."
+>
+  <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+    <div class="max-w-3xl mx-auto">
+      <h1 class="text-3xl sm:text-5xl font-extrabold font-display tracking-tight text-main-text text-center">
+        Contact Us
+      </h1>
+      <p class="mt-4 text-lg text-muted-text text-center">
+        Have feedback, questions, or suggestions for a new calculator? We would love to hear from you.
+      </p>
+      
+      <div class="mt-12 rounded-md border border-border bg-surface p-8 shadow-sm max-w-lg mx-auto">
+        <form id="contact-form" class="space-y-6">
+          <input type="hidden" name="access_key" value="84f71b3c-47ba-4eb8-89f6-10565d771f77" />
+          
+          <div>
+            <label for="name" class="block text-sm font-semibold text-main-text">Name</label>
+            <input type="text" id="name" name="name" class="mt-2 block w-full rounded-md border border-border bg-page text-main-text px-4 py-3 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand" required />
+          </div>
+          
+          <div>
+            <label for="email" class="block text-sm font-semibold text-main-text">Email Address</label>
+            <input type="email" id="email" name="email" class="mt-2 block w-full rounded-md border border-border bg-page text-main-text px-4 py-3 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand" required />
+          </div>
+          
+          <div>
+            <label for="message" class="block text-sm font-semibold text-main-text">Message</label>
+            <textarea id="message" name="message" rows="4" class="mt-2 block w-full rounded-md border border-border bg-page text-main-text px-4 py-3 text-sm focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand" required></textarea>
+          </div>
+          
+          <button type="submit" class="w-full rounded-md bg-brand hover:bg-brand-hover py-3 text-sm font-semibold text-white transition-colors duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+            Send Message
+          </button>
+          
+          <div id="form-result" class="hidden mt-4 text-center text-sm font-medium"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  const resultDiv = document.getElementById('form-result') as HTMLDivElement;
+  const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // Disable button and update state
+    submitButton.disabled = true;
+    submitButton.textContent = 'Sending...';
+
+    // Reset results box
+    resultDiv.classList.add('hidden');
+    resultDiv.className = 'hidden mt-4 text-center text-sm font-medium';
+    resultDiv.textContent = '';
+
+    const formData = new FormData(form);
+
+    fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      body: formData
+    })
+    .then(async (response) => {
+      const json = await response.json();
+      if (response.status === 200) {
+        resultDiv.textContent = "Message sent successfully!";
+        resultDiv.className = 'mt-4 text-center text-sm font-medium text-emerald-600 dark:text-emerald-400';
+        resultDiv.classList.remove('hidden');
+        form.reset();
+      } else {
+        resultDiv.textContent = json.message || "Something went wrong. Please try again.";
+        resultDiv.className = 'mt-4 text-center text-sm font-medium text-rose-600 dark:text-rose-400';
+        resultDiv.classList.remove('hidden');
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      resultDiv.textContent = "Something went wrong. Please try again.";
+      resultDiv.className = 'mt-4 text-center text-sm font-medium text-rose-600 dark:text-rose-400';
+      resultDiv.classList.remove('hidden');
+    })
+    .finally(() => {
+      submitButton.disabled = false;
+      submitButton.textContent = 'Send Message';
+    });
+  });
+</script>
