@@ -329,17 +329,6 @@ import Layout from '../layouts/Layout.astro';
             </div>
           </div>
 
-          <!-- PDF Download button -->
-          <div id="pdf-button-container" class="mt-6 hidden">
-            <button 
-              id="download-pdf-btn"
-              type="button"
-              class="w-full inline-flex items-center justify-center rounded-md bg-brand hover:bg-brand-hover px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 cursor-pointer"
-            >
-              ⬇ Download Amortization Schedule (PDF)
-            </button>
-          </div>
-
           <!-- Stacked Bar Chart -->
           <div class="mt-8">
             <div class="h-4 w-full rounded-full bg-border overflow-hidden flex">
@@ -408,6 +397,17 @@ import Layout from '../layouts/Layout.astro';
           <!-- Savings Badge / Text block -->
           <div id="savings-card" class="hidden mt-6 p-4 rounded-xl border border-emerald-500/20 bg-emerald-50/50 dark:bg-emerald-950/20 text-emerald-800 dark:text-emerald-300 text-sm font-medium leading-relaxed">
             🎉 By paying extra, you save <span id="savings-years" class="font-bold">0</span> years and <span id="savings-interest" class="font-bold">$0.00</span> in interest!
+          </div>
+
+          <!-- PDF Download button -->
+          <div id="pdf-button-container" class="mt-6 hidden">
+            <button 
+              id="download-pdf-btn"
+              type="button"
+              class="w-full inline-flex items-center justify-center rounded-md bg-brand hover:bg-brand-hover px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 cursor-pointer"
+            >
+              ⬇ Download Amortization Schedule (PDF)
+            </button>
           </div>
         </div>
       </div>
